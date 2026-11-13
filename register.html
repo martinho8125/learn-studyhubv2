@@ -1,0 +1,184 @@
+
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Criar conta | Study Base Learn</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  padding:20px;
+  background:#090D19;
+  color:white;
+  font-family:Arial,sans-serif;
+}
+.container{
+  width:100%;
+  max-width:430px;
+  padding:30px;
+  background:#11182A;
+  border:1px solid #27314B;
+  border-radius:20px;
+}
+.logo{text-align:center;font-size:21px;font-weight:bold;margin-bottom:24px}
+.logo span{color:#9586FF}
+h1{text-align:center;font-size:26px;margin-bottom:8px}
+.subtitle{text-align:center;color:#929CB5;font-size:14px;margin-bottom:25px}
+label{display:block;font-size:14px;margin:15px 0 7px}
+input{
+  width:100%;padding:14px;
+  background:#19233B;color:white;
+  border:1px solid #303B59;border-radius:9px;
+  outline:none;
+}
+input:focus{border-color:#7667F5}
+button{
+  width:100%;padding:14px;margin-top:22px;
+  background:#7667F5;color:white;
+  border:0;border-radius:9px;
+  font-weight:bold;cursor:pointer;
+}
+button:disabled{opacity:.6}
+.message{
+  color:#B8ADFF;text-align:center;
+  font-size:13px;margin-top:15px;
+  overflow-wrap:anywhere;
+}
+.bottom{text-align:center;color:#929CB5;font-size:14px;margin-top:22px}
+a{color:#A99CFF;text-decoration:none}
+.back{display:block;text-align:center;margin-top:20px;font-size:13px;color:#929CB5}
+</style>
+</head>
+
+<body>
+<main class="container">
+
+  <div class="logo">STUDY <span>BASE</span> LEARN</div>
+
+  <h1>Criar conta</h1>
+  <p class="subtitle">Começa a tua jornada de aprendizagem.</p>
+
+  <form id="registerForm">
+
+    <label for="username">Nome de utilizador</label>
+    <input id="username" type="text"
+      placeholder="O teu nome" required maxlength="40"
+      autocomplete="username">
+
+    <label for="email">Email</label>
+    <input id="email" type="email"
+      placeholder="O teu email" required
+      autocomplete="email">
+
+    <label for="password">Palavra-passe</label>
+    <input id="password" type="password"
+      placeholder="Mínimo de 8 caracteres"
+      required minlength="8"
+      autocomplete="new-password">
+
+    <label for="confirmPassword">Confirmar palavra-passe</label>
+    <input id="confirmPassword" type="password"
+      placeholder="Repete a palavra-passe"
+      required minlength="8"
+      autocomplete="new-password">
+
+    <button id="registerBtn" type="submit">
+      Criar a minha conta
+    </button>
+
+  </form>
+
+  <p class="message" id="message" role="status" aria-live="polite"></p>
+
+  <div class="bottom">
+    Já tens conta? <a href="login.html">Iniciar sessão</a>
+  </div>
+
+  <a href="index.html" class="back">← Voltar ao início</a>
+
+</main>
+
+<script type="module">
+import {auth, db} from "./js/firebase.js";
+
+import {
+  createUserWithEmailAndPassword,
+  updateProfile
+} from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
+
+import {
+  doc,
+  setDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
+
+const form = document.getElementById("registerForm");
+const message = document.getElementById("message");
+const button = document.getElementById("registerBtn");
+
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const username = document.getElementById("username").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const confirmation = document.getElementById("confirmPassword").value;
+
+  if (username.length < 2) {
+    message.textContent = "O nome deve ter pelo menos 2 caracteres.";
+    return;
+  }
+
+  if (password !== confirmation) {
+    message.textContent = "As palavras-passe não coincidem.";
+    return;
+  }
+
+  button.disabled = true;
+  message.textContent = "A criar a tua conta...";
+
+  try {
+    const result = await createUserWithEmailAndPassword(
+      auth, email, password
+    );
+
+    await updateProfile(result.user, {
+      displayName: username
+    });
+
+    await setDoc(doc(db, "users", result.user.uid), {
+      username: username,
+      email: result.user.email,
+      photoURL: "",
+      role: "student",
+      createdAt: serverTimestamp()
+    });
+
+    message.textContent = "Conta criada com sucesso!";
+
+    window.location.href = "index.html";
+
+  } catch (error) {
+    const errors = {
+      "auth/email-already-in-use": "Este email já está registado.",
+      "auth/invalid-email": "O email não é válido.",
+      "auth/weak-password": "A palavra-passe é demasiado fraca.",
+      "auth/network-request-failed": "Verifica a ligação à internet."
+    };
+
+    message.textContent =
+      errors[error.code] || "Não foi possível criar a conta.";
+
+  } finally {
+    button.disabled = false;
+  }
+});
+</script>
+
+</body>
+</html>

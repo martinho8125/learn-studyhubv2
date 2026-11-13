@@ -1,0 +1,606 @@
+
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090D19">
+  <meta name="description" content="Study Base Learn - A tua plataforma de aprendizagem.">
+  <title>Study Base Learn</title>
+
+  <style>
+    :root {
+      --bg: #090D19;
+      --surface: #11182A;
+      --surface2: #19233B;
+      --primary: #7667F5;
+      --secondary: #9B8BFF;
+      --text: #F4F5FF;
+      --muted: #929CB5;
+      --border: #27314B;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Inter, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button, input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .container {
+      width: min(1200px, 92%);
+      margin: auto;
+    }
+
+    /* NAVBAR */
+
+    header {
+      background: rgba(9,13,25,.95);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(15px);
+    }
+
+    .navbar {
+      min-height: 75px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .logo {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -.7px;
+      white-space: nowrap;
+    }
+
+    .logo span {
+      color: var(--secondary);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .nav-links a:hover {
+      color: white;
+    }
+
+    .login {
+      background: var(--primary);
+      color: white !important;
+      padding: 10px 18px;
+      border-radius: 9px;
+    }
+
+    .menu-btn {
+      display: none;
+      background: transparent;
+      color: white;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 7px 12px;
+      font-size: 22px;
+    }
+
+    /* HERO */
+
+    .hero {
+      padding: 85px 0 65px;
+      background:
+        radial-gradient(ellipse at 80% 20%,
+        rgba(111,82,255,.19), transparent 50%);
+    }
+
+    .hero-content {
+      max-width: 760px;
+    }
+
+    .tag {
+      display: inline-block;
+      background: rgba(118,103,245,.14);
+      color: #B8ADFF;
+      border: 1px solid rgba(118,103,245,.3);
+      padding: 7px 14px;
+      border-radius: 30px;
+      font-size: 12px;
+      margin-bottom: 23px;
+    }
+
+    .hero h1 {
+      font-size: clamp(34px, 6vw, 65px);
+      line-height: 1.12;
+      letter-spacing: -2px;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 span {
+      color: var(--secondary);
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 17px;
+      max-width: 570px;
+      margin-bottom: 30px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 13px 22px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      font-weight: 600;
+      font-size: 14px;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.15);
+    }
+
+    /* SECTIONS */
+
+    section {
+      padding: 55px 0;
+      scroll-margin-top: 85px;
+    }
+
+    .section-header {
+      margin-bottom: 25px;
+    }
+
+    .section-header h2 {
+      font-size: 25px;
+      margin-bottom: 5px;
+    }
+
+    .section-header p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* SEARCH */
+
+    .search-box {
+      margin-top: 35px;
+      max-width: 550px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 15px 18px;
+      background: var(--surface);
+      color: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      outline: none;
+    }
+
+    .search-box input:focus {
+      border-color: var(--primary);
+    }
+
+    /* CARDS */
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 23px;
+      transition: .25s;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: var(--primary);
+    }
+
+    .card-icon {
+      width: 47px;
+      height: 47px;
+      border-radius: 12px;
+      background: rgba(118,103,245,.16);
+      display: grid;
+      place-items: center;
+      font-size: 23px;
+      margin-bottom: 17px;
+    }
+
+    .card h3 {
+      font-size: 17px;
+      margin-bottom: 7px;
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .card-link {
+      display: inline-block;
+      color: var(--secondary);
+      font-size: 13px;
+      margin-top: 18px;
+      font-weight: 600;
+    }
+
+    /* EMPTY STATE */
+
+    .empty-state {
+      display: none;
+      color: var(--muted);
+      padding: 25px 0;
+    }
+
+    /* FOOTER */
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 35px 0;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 850px) {
+      .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .nav-links {
+        gap: 14px;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .navbar {
+        min-height: 65px;
+      }
+
+      .menu-btn {
+        display: block;
+      }
+
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 65px;
+        left: 0;
+        width: 100%;
+        padding: 22px 4%;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        flex-direction: column;
+        align-items: stretch;
+        gap: 18px;
+      }
+
+      .nav-links.open {
+        display: flex;
+      }
+
+      .nav-links a {
+        padding: 5px 0;
+      }
+
+      .login {
+        text-align: center;
+      }
+
+      .hero {
+        padding: 65px 0 45px;
+      }
+
+      .hero h1 {
+        letter-spacing: -1.5px;
+      }
+
+      .hero p {
+        font-size: 15px;
+      }
+
+      section {
+        padding: 40px 0;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+        gap: 13px;
+      }
+
+      .card {
+        padding: 19px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="container navbar">
+
+    <a href="#" class="logo">
+      STUDY <span>BASE</span> LEARN
+    </a>
+
+    <button class="menu-btn" id="menuBtn"
+      aria-label="Abrir menu"
+      aria-expanded="false">
+      ☰
+    </button>
+
+    <nav class="nav-links" id="navLinks">
+      <a href="#inicio">Início</a>
+      <a href="#estudo">Estudar</a>
+      <a href="#organizacao">Organização</a>
+      <a href="#comunidade">Comunidade</a>
+      <a href="#blog">Blog</a>
+      <a href="login.html" class="login">Entrar</a>
+    </nav>
+
+  </div>
+</header>
+
+<main>
+
+  <section class="hero" id="inicio">
+    <div class="container hero-content">
+
+      <div class="tag">✦ A tua plataforma educativa</div>
+
+      <h1>
+        Aprende mais.<br>
+        Organiza-te.<br>
+        <span>Alcança o teu futuro.</span>
+      </h1>
+
+      <p>
+        Um espaço criado para estudantes.
+        Descobre resumos, organiza os teus estudos,
+        partilha conhecimentos e aprende com a comunidade.
+      </p>
+
+      <div class="hero-actions">
+        <a href="register.html" class="btn btn-primary">
+          Criar conta →
+        </a>
+
+        <a href="#estudo" class="btn btn-secondary">
+          Explorar plataforma
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="estudo">
+    <div class="container">
+
+      <div class="section-header">
+        <h2>O teu espaço de estudo</h2>
+        <p>Tudo o que precisas para aprender melhor.</p>
+      </div>
+
+      <div class="search-box">
+        <input
+          type="search"
+          id="search"
+          placeholder="🔎 Procurar ferramentas..."
+          aria-label="Procurar ferramentas">
+      </div>
+
+      <div class="grid" id="toolsGrid">
+
+        <article class="card" data-search="resumos apontamentos estudo">
+          <div class="card-icon">📚</div>
+          <h3>Biblioteca de resumos</h3>
+          <p>Consulta e partilha apontamentos escolares.</p>
+          <a href="#blog" class="card-link">Explorar →</a>
+        </article>
+
+        <article class="card" data-search="agenda calendario testes">
+          <div class="card-icon">📅</div>
+          <h3>Agenda escolar</h3>
+          <p>Organiza testes, trabalhos e compromissos.</p>
+          <a href="#organizacao" class="card-link">Explorar →</a>
+        </article>
+
+        <article class="card" data-search="tarefas planeamento estudo">
+          <div class="card-icon">✅</div>
+          <h3>Lista de tarefas</h3>
+          <p>Planeia o que tens de fazer.</p>
+          <a href="#organizacao" class="card-link">Explorar →</a>
+        </article>
+
+        <article class="card" data-search="horario aulas escola">
+          <div class="card-icon">🕒</div>
+          <h3>Horário semanal</h3>
+          <p>Consulta e organiza as tuas aulas.</p>
+          <a href="#organizacao" class="card-link">Explorar →</a>
+        </article>
+
+        <article class="card" data-search="comunidade estudantes duvidas">
+          <div class="card-icon">👥</div>
+          <h3>Comunidade</h3>
+          <p>Partilha dúvidas e conhecimentos.</p>
+          <a href="#comunidade" class="card-link">Explorar →</a>
+        </article>
+
+        <article class="card" data-search="blog artigos noticias">
+          <div class="card-icon">📰</div>
+          <h3>Blog educativo</h3>
+          <p>Descobre artigos e conteúdos educativos.</p>
+          <a href="#blog" class="card-link">Explorar →</a>
+        </article>
+
+      </div>
+
+      <p class="empty-state" id="emptyState">
+        Não foram encontradas ferramentas.
+      </p>
+
+    </div>
+  </section>
+
+  <section id="organizacao">
+    <div class="container">
+      <div class="section-header">
+        <h2>Organiza a tua vida escolar</h2>
+        <p>Prepara-te para os teus objetivos.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎯</div>
+        <h3>O teu sucesso começa com organização.</h3>
+        <p>Em breve, poderás gerir tarefas, horários,
+          testes e planos de estudo num único lugar.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="comunidade">
+    <div class="container">
+      <div class="section-header">
+        <h2>Comunidade Study Base Learn</h2>
+        <p>Aprender também é partilhar.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🌍</div>
+        <h3>Aprende em conjunto.</h3>
+        <p>Um espaço para estudantes colaborarem,
+          partilharem ideias e esclarecerem dúvidas.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="blog">
+    <div class="container">
+      <div class="section-header">
+        <h2>Blog educativo</h2>
+        <p>Conhecimento para todos os estudantes.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">💡</div>
+        <h3>Novos conhecimentos começam aqui.</h3>
+        <p>Em breve, encontrarás artigos, dicas
+          e conteúdos educativos.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <div class="logo">STUDY <span>BASE</span> LEARN</div>
+    <p>Aprender. Organizar. Partilhar. Evoluir.</p>
+    <p>© 2026 Study Base Learn. Todos os direitos reservados.</p>
+  </div>
+</footer>
+
+<script>
+  // Menu adaptado a telemóveis
+  const menuBtn = document.getElementById("menuBtn");
+  const navLinks = document.getElementById("navLinks");
+
+  menuBtn.addEventListener("click", () => {
+    const open = navLinks.classList.toggle("open");
+    menuBtn.setAttribute("aria-expanded", open);
+    menuBtn.textContent = open ? "✕" : "☰";
+  });
+
+  // Fechar menu depois de escolher uma página
+  navLinks.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", () => {
+      navLinks.classList.remove("open");
+      menuBtn.setAttribute("aria-expanded", "false");
+      menuBtn.textContent = "☰";
+    });
+  });
+
+  // Pesquisa de ferramentas
+  const search = document.getElementById("search");
+  const cards = document.querySelectorAll(".card[data-search]");
+  const emptyState = document.getElementById("emptyState");
+
+  search.addEventListener("input", () => {
+    const term = search.value.toLowerCase().trim();
+    let visible = 0;
+
+    cards.forEach(card => {
+      const match = card.dataset.search.includes(term);
+      card.style.display = match ? "" : "none";
+      if (match) visible++;
+    });
+
+    emptyState.style.display = visible === 0 ? "block" : "none";
+  });
+</script>
+
+</body>
+      </html>
+            

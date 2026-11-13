@@ -1,1 +1,270 @@
 
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Entrar | Study Base Learn</title>
+
+<style>
+* {box-sizing:border-box;margin:0;padding:0}
+
+body {
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  padding:20px;
+  background:#090D19;
+  color:#fff;
+  font-family:Arial,sans-serif;
+}
+
+.container {
+  width:100%;
+  max-width:420px;
+  background:#11182A;
+  border:1px solid #27314B;
+  border-radius:20px;
+  padding:32px;
+}
+
+.logo {
+  text-align:center;
+  font-size:21px;
+  font-weight:bold;
+  margin-bottom:25px;
+}
+
+.logo span {color:#9586FF}
+
+h1 {
+  font-size:27px;
+  text-align:center;
+  margin-bottom:8px;
+}
+
+.subtitle {
+  color:#929CB5;
+  text-align:center;
+  margin-bottom:27px;
+  font-size:14px;
+}
+
+label {
+  display:block;
+  margin:15px 0 7px;
+  font-size:14px;
+}
+
+input {
+  width:100%;
+  padding:14px;
+  background:#19233B;
+  border:1px solid #303B59;
+  border-radius:9px;
+  color:white;
+  outline:none;
+}
+
+input:focus {border-color:#7667F5}
+
+button {
+  width:100%;
+  padding:14px;
+  margin-top:18px;
+  border:0;
+  border-radius:9px;
+  background:#7667F5;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+button:disabled {opacity:.6;cursor:wait}
+
+.google {
+  background:#202B43;
+  border:1px solid #35415E;
+}
+
+.forgot {
+  display:block;
+  text-align:right;
+  margin-top:13px;
+  color:#A99CFF;
+  font-size:13px;
+  text-decoration:none;
+}
+
+.message {
+  margin-top:15px;
+  text-align:center;
+  font-size:13px;
+  color:#B8ADFF;
+  overflow-wrap:anywhere;
+}
+
+.bottom {
+  margin-top:24px;
+  text-align:center;
+  color:#929CB5;
+  font-size:14px;
+}
+
+.bottom a {
+  color:#A99CFF;
+  text-decoration:none;
+}
+
+.back {
+  display:block;
+  margin-top:20px;
+  text-align:center;
+  color:#929CB5;
+  text-decoration:none;
+  font-size:13px;
+}
+</style>
+</head>
+
+<body>
+
+<main class="container">
+
+  <div class="logo">
+    STUDY <span>BASE</span> LEARN
+  </div>
+
+  <h1>Bem-vindo de volta!</h1>
+
+  <p class="subtitle">
+    Entra na tua conta e continua a aprender.
+  </p>
+
+  <form id="loginForm">
+
+    <label for="email">Email</label>
+    <input id="email" type="email"
+      placeholder="O teu email" required autocomplete="email">
+
+    <label for="password">Palavra-passe</label>
+    <input id="password" type="password"
+      placeholder="A tua palavra-passe" required
+      autocomplete="current-password">
+
+    <a href="#" class="forgot" id="forgot">
+      Esqueceste-te da palavra-passe?
+    </a>
+
+    <button id="loginBtn" type="submit">
+      Iniciar sessão
+    </button>
+
+  </form>
+
+  <button class="google" id="googleBtn" type="button">
+    Continuar com Google
+  </button>
+
+  <p class="message" id="message" role="status" aria-live="polite"></p>
+
+  <div class="bottom">
+    Ainda não tens conta?
+    <a href="register.html">Criar conta</a>
+  </div>
+
+  <a href="index.html" class="back">
+    ← Voltar ao início
+  </a>
+
+</main>
+
+<script type="module">
+import { auth } from "./js/firebase.js";
+
+import {
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+  sendPasswordResetEmail
+} from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
+
+const form = document.getElementById("loginForm");
+const message = document.getElementById("message");
+const loginBtn = document.getElementById("loginBtn");
+const googleBtn = document.getElementById("googleBtn");
+
+function showMessage(text) {
+  message.textContent = text;
+}
+
+function explainError(error) {
+  const errors = {
+    "auth/invalid-credential": "Email ou palavra-passe incorretos.",
+    "auth/invalid-email": "Email inválido.",
+    "auth/user-disabled": "Esta conta está desativada.",
+    "auth/too-many-requests": "Demasiadas tentativas. Tenta mais tarde.",
+    "auth/network-request-failed": "Verifica a tua ligação à internet.",
+    "auth/popup-closed-by-user": "A janela de Google foi fechada."
+  };
+
+  return errors[error.code] || "Não foi possível entrar. Tenta novamente.";
+}
+
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  loginBtn.disabled = true;
+  showMessage("A verificar os teus dados...");
+
+  try {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    await signInWithEmailAndPassword(auth, email, password);
+
+    window.location.href = "index.html";
+  } catch (error) {
+    showMessage(explainError(error));
+  } finally {
+    loginBtn.disabled = false;
+  }
+});
+
+googleBtn.addEventListener("click", async () => {
+  googleBtn.disabled = true;
+  showMessage("A abrir autenticação Google...");
+
+  try {
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(auth, provider);
+
+    window.location.href = "index.html";
+  } catch (error) {
+    showMessage(explainError(error));
+  } finally {
+    googleBtn.disabled = false;
+  }
+});
+
+document.getElementById("forgot").addEventListener("click", async (event) => {
+  event.preventDefault();
+
+  const email = document.getElementById("email").value.trim();
+
+  if (!email) {
+    showMessage("Escreve primeiro o teu email.");
+    return;
+  }
+
+  try {
+    await sendPasswordResetEmail(auth, email);
+    showMessage("Se a conta existir, receberás instruções para recuperar o acesso.");
+  } catch (error) {
+    showMessage(explainError(error));
+  }
+});
+</script>
+
+</body>
+</html>
